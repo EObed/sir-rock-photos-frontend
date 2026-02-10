@@ -1,5 +1,5 @@
 "use client";
-import React, {ChangeEvent, FormEvent, useState} from 'react'
+import React, { useState, ChangeEvent, FormEvent } from 'react'
 import {Button} from "@/components/ui/button";
 
 const ContactForm = () => {
@@ -9,6 +9,7 @@ const ContactForm = () => {
         message: ''
     });
     const [showPhoneWarning, setShowPhoneWarning] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -17,20 +18,59 @@ const ContactForm = () => {
             [name]: value
         }));
 
-
+        // Show warning when phone number reaches 3 characters
         if (name === 'phone' && value.length === 3) {
             setShowPhoneWarning(true);
         }
     };
 
-
+    // Check if all fields are filled
     const isFormValid = formData.name.trim() !== '' &&
         formData.phone.trim() !== '' &&
         formData.message.trim() !== '';
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
+        setIsSubmitting(true);
+
+        try {
+            console.log('Sending form data:', formData);
+
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
+            // Check if response has content before parsing
+            const text = await response.text();
+            console.log('Response text:', text);
+
+            let data;
+            if (text) {
+                data = JSON.parse(text);
+            } else {
+                throw new Error('Empty response from server');
+            }
+
+            if (response.ok) {
+                alert('Message sent successfully! I\'ll contact you soon.');
+                setFormData({ name: '', phone: '', message: '' });
+                setShowPhoneWarning(false);
+            } else {
+                alert(`Failed to send message: ${data.error || 'Unknown error'}`);
+            }
+        } catch (error) {
+
+            alert('An error occurred. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -68,10 +108,10 @@ const ContactForm = () => {
             />
             <Button
                 type="submit"
-                disabled={!isFormValid}
+                disabled={!isFormValid || isSubmitting}
                 className="w-full bg-black text-white hover:bg-accent/90 hover:text-black cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
             </Button>
         </form>
     )
