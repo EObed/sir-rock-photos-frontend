@@ -28,7 +28,7 @@ export function SelectedWorks({ albums }: SelectedWorksProps) {
 
                 <div className="text-center">
                     <button
-                        className="px-6 py-3 rounded-lg bg-accent text-accent-foreground font-medium hover:bg-accent/90 transition"
+                        className="px-6 py-3 rounded-lg bg-accent text-accent-foreground font-medium hover:bg-accent/90 transition cursor-pointer"
                         onClick={() => window.location.href = '/albums'}
                     >
                         View Full Portfolio

@@ -2,6 +2,7 @@ import React from 'react'
 import {Button} from "@/components/ui/button";
 import {sanityClient} from "@/lib/sanity";
 import {ContactInformation} from "@/types/ContactInformation";
+import ContactForm from "@/components/home/ContactForm";
 
 export async function ContactSection () {
     const contactInformation = await sanityClient.fetch<ContactInformation>(
@@ -51,27 +52,7 @@ export async function ContactSection () {
                         </div>
                     </div>
 
-                    <form className="space-y-4 max-w-2xl mx-auto">
-                        <input
-                            type="text"
-                            placeholder="Your Name"
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                        />
-                        <input
-                            type="email"
-                            placeholder="Your Email"
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                        />
-                        <textarea
-                            placeholder="Tell me about your project"
-                            rows={5}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent resize-none"
-                        />
-                        <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
-                            Send Message
-                        </Button>
-                    </form>
-
+                    <ContactForm />
 
                 </div>
             </div>

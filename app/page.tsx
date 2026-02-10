@@ -20,11 +20,11 @@ export default function HomePage() {
 
                         {/* Buttons (static for now) */}
                         <div className="flex gap-4">
-                            <button className="px-6 py-3 rounded-lg bg-accent text-accent-foreground font-medium hover:bg-accent/90 transition">
+                            <button className="px-6 py-3 rounded-lg bg-black text-white font-medium hover:bg-accent/90 hover:text-black transition cursor-pointer">
                                 View My Work
                             </button>
 
-                            <button className="px-6 py-3 rounded-lg border border-border font-medium hover:bg-secondary transition">
+                            <button className="px-6 py-3 rounded-lg border border-border font-medium hover:bg-secondary transition cursor-pointer">
                                 Get In Touch
                             </button>
                         </div>

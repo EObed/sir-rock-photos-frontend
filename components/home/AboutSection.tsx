@@ -31,7 +31,7 @@ export default async function AboutSection() {
                                     key={skill}
                                     className="flex items-center gap-3 p-4 bg-background rounded-lg border border-border"
                                 >
-                                    <div className="w-2 h-2 bg-accent rounded-full" />
+                                    <div className="w-2 h-2 bg-black rounded-full" />
                                     <span className="font-medium">{skill}</span>
                                 </div>
                             ))}
