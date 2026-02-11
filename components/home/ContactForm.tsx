@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent } from 'react'
 import {Button} from "@/components/ui/button";
+import {toast} from "sonner";
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
@@ -18,13 +19,11 @@ const ContactForm = () => {
             [name]: value
         }));
 
-        // Show warning when phone number reaches 3 characters
-        if (name === 'phone' && value.length === 3) {
+        if (name === 'phone' && value.length >= 3) {
             setShowPhoneWarning(true);
         }
     };
 
-    // Check if all fields are filled
     const isFormValid = formData.name.trim() !== '' &&
         formData.phone.trim() !== '' &&
         formData.message.trim() !== '';
@@ -34,7 +33,6 @@ const ContactForm = () => {
         setIsSubmitting(true);
 
         try {
-            console.log('Sending form data:', formData);
 
             const response = await fetch('/api/send-email', {
                 method: 'POST',
@@ -44,12 +42,9 @@ const ContactForm = () => {
                 body: JSON.stringify(formData),
             });
 
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
 
             // Check if response has content before parsing
             const text = await response.text();
-            console.log('Response text:', text);
 
             let data;
             if (text) {
@@ -59,15 +54,32 @@ const ContactForm = () => {
             }
 
             if (response.ok) {
-                alert('Message sent successfully! I\'ll contact you soon.');
+                toast("Success", {
+                    description: <span style={{ color: "#067C3C" }}>{'Message sent successfully! I\'ll contact you soon.'}</span>,
+                    style: {
+                        borderColor: "#067C3C1A",
+                        color: "#067C3C",
+                    },
+                });
                 setFormData({ name: '', phone: '', message: '' });
                 setShowPhoneWarning(false);
             } else {
-                alert(`Failed to send message: ${data.error || 'Unknown error'}`);
+                toast("Error", {
+                    description: <span style={{ color: "#067C3C" }}>{'Failed to send message'}</span>,
+                    style: {
+                        borderColor: "#FF3B301A",
+                        color: "#FF3B30",
+                    }
+                });
             }
         } catch (error) {
-
-            alert('An error occurred. Please try again.');
+            toast("Error", {
+                description: <span style={{ color: "#067C3C" }}>{'An error occurred. Please try again.'}</span>,
+                style: {
+                    borderColor: "#FF3B301A",
+                    color: "#FF3B30",
+                }
+            });
         } finally {
             setIsSubmitting(false);
         }
