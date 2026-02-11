@@ -1,15 +1,23 @@
 "use client";
 
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Menu, X} from "lucide-react";
+import {useRouter, usePathname} from 'next/navigation';
 
 const Nav = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [activeSection, setActiveSection] = useState('home')
-    const sectionsRef = useRef<{ [key: string]: HTMLElement | null }>({})
+    const router = useRouter()
+    const pathname = usePathname()
 
     const scrollToSection = (sectionId: string) => {
+        if (pathname !== '/') {
+            router.push(`/#${sectionId}`)
+            setIsMenuOpen(false)
+            return
+        }
+
         const element = document.getElementById(sectionId)
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' })
@@ -18,10 +26,24 @@ const Nav = () => {
         }
     }
 
+    useEffect(() => {
+        if (pathname === '/' && window.location.hash) {
+            const sectionId = window.location.hash.substring(1)
+            setTimeout(() => {
+                const element = document.getElementById(sectionId)
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                    setActiveSection(sectionId)
+                }
+            }, 100)
+        }
+    }, [pathname])
 
     useEffect(() => {
+        if (pathname !== '/') return
+
         const handleScroll = () => {
-            const sections = ['home', 'about', 'work', 'contact']
+            const sections = ['home', 'about', 'selected-works', 'contact']
             const scrollPosition = window.scrollY + 100
 
             for (const sectionId of sections) {
@@ -41,7 +63,7 @@ const Nav = () => {
 
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
-    }, [])
+    }, [pathname])
 
     const navItems = [
         { id: 'home', label: 'Home' },
@@ -67,7 +89,7 @@ const Nav = () => {
                                 key={item.id}
                                 onClick={() => scrollToSection(item.id)}
                                 className={`text-sm font-medium transition-colors duration-200 ${
-                                    activeSection === item.id
+                                    activeSection === item.id && pathname === '/'
                                         ? 'text-foreground border-b-2 border-accent'
                                         : 'text-muted-foreground hover:text-foreground'
                                 }`}
