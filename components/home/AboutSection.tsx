@@ -8,7 +8,7 @@ export default async function AboutSection() {
     )
 
     return (
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-secondary/20">
+        <section id={"about"} className="py-20 px-4 sm:px-6 lg:px-8 bg-secondary/20">
             <div className="max-w-6xl mx-auto">
                 <div className=" gap-12 mb-16">
                     {home.about?.map((item) => (
